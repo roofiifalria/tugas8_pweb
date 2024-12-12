@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Registrasi dan Pencarian Kode Pos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #hasilPencarian {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Form Registrasi dan Pencarian Kode Pos</h2>
+        
+        <!-- Form Registrasi -->
+        <form id="formRegistrasi">
+            <div class="form-group">
+                <label for="nama">Nama Lengkap</label>
+                <input type="text" id="nama" name="nama" required>
+                <div id="namaError" class="error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+                <div id="emailError" class="error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="telepon">Nomor Telepon</label>
+                <input type="tel" id="telepon" name="telepon" required>
+                <div id="teleponError" class="error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="provinsi">Provinsi</label>
+                <select id="provinsi" name="provinsi">
+                    <option value="">Pilih Provinsi</option>
+                    <option value="jawa-barat">Jawa Barat</option>
+                    <option value="jawa-tengah">Jawa Tengah</option>
+                    <option value="jawa-timur">Jawa Timur</option>
+                    <option value="dki-jakarta">DKI Jakarta</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="kodePos">Pencarian Kode Pos</label>
+                <input type="text" id="kodePos" name="kodePos" placeholder="Masukkan nama kota/wilayah">
+                <button type="button" onclick="cariKodePos()">Cari Kode Pos</button>
+                <div id="hasilPencarian"></div>
+            </div>
+
+            <button type="submit">Daftar</button>
+        </form>
+    </div>
+
+    <script>
+        // Data Kode Pos (Contoh sederhana)
+        const dataKodePos = {
+            'bandung': '40111',
+            'jakarta': '10110',
+            'surabaya': '60111',
+            'semarang': '50111',
+            'bogor': '16111'
+        };
+
+        // Fungsi Validasi Nama
+        function validasiNama() {
+            const nama = document.getElementById('nama');
+            const namaError = document.getElementById('namaError');
+            
+            if (nama.value.length < 3) {
+                namaError.textContent = 'Nama harus minimal 3 karakter';
+                return false;
+            }
+            namaError.textContent = '';
+            return true;
+        }
+
+        // Fungsi Validasi Email
+        function validasiEmail() {
+            const email = document.getElementById('email');
+            const emailError = document.getElementById('emailError');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailRegex.test(email.value)) {
+                emailError.textContent = 'Format email tidak valid';
+                return false;
+            }
+            emailError.textContent = '';
+            return true;
+        }
+
+        // Fungsi Validasi Telepon
+        function validasiTelepon() {
+            const telepon = document.getElementById('telepon');
+            const teleponError = document.getElementById('teleponError');
+            const teleponRegex = /^08[0-9]{8,11}$/;
+            
+            if (!teleponRegex.test(telepon.value)) {
+                teleponError.textContent = 'Nomor telepon harus dimulai 08 dan 10-13 digit';
+                return false;
+            }
+            teleponError.textContent = '';
+            return true;
+        }
+
+        // Fungsi Pencarian Kode Pos
+        function cariKodePos() {
+            const kodePos = document.getElementById('kodePos');
+            const hasilPencarian = document.getElementById('hasilPencarian');
+            
+            const kota = kodePos.value.toLowerCase();
+            const kodePosHasil = dataKodePos[kota];
+            
+            if (kodePosHasil) {
+                hasilPencarian.textContent = `Kode Pos untuk ${kota}: ${kodePosHasil}`;
+                hasilPencarian.style.color = 'green';
+            } else {
+                hasilPencarian.textContent = 'Kota tidak ditemukan';
+                hasilPencarian.style.color = 'red';
+            }
+        }
+
+        // Event Listener untuk Validasi Real-time
+        document.getElementById('nama').addEventListener('input', validasiNama);
+        document.getElementById('email').addEventListener('input', validasiEmail);
+        document.getElementById('telepon').addEventListener('input', validasiTelepon);
+
+        // Validasi Saat Submit
+        document.getElementById('formRegistrasi').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const namaValid = validasiNama();
+            const emailValid = validasiEmail();
+            const teleponValid = validasiTelepon();
+            
+            if (namaValid && emailValid && teleponValid) {
+                alert('Registrasi Berhasil!');
+                // Anda bisa menambahkan kode untuk mengirim data ke server di sini
+            }
+        });
+    </script>
+</body>
+</html>
